@@ -24,9 +24,13 @@ class ViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        data = try! Data(contentsOf: URL(string: urlStrings[tracker])!)
+        DispatchQueue.global().async {
+            self.data = try! Data(contentsOf: URL(string: self.urlStrings[self.tracker])!) // backgorund thead
+            DispatchQueue.main.async {
+                self.imageView.image = UIImage(data: self.data) // must be main thread
+            }
+        }
         
-        imageView.image = UIImage(data: data)
         
         self.navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(changeImage))
         
@@ -40,11 +44,15 @@ class ViewController: UIViewController {
         } else {
                 tracker -= 1
         }
+        
+        DispatchQueue.global().async {
+            self.data = try! Data(contentsOf: URL(string: self.urlStrings[self.tracker])!) // backgorund thead
+            DispatchQueue.main.async {
+                self.imageView.image = UIImage(data: self.data) // must be main thread
+            }
+        }
     
-        
-        data = try! Data(contentsOf: URL(string: urlStrings[1])!)
-        imageView.image = UIImage(data: data)
-        
+    
     }
 
 
